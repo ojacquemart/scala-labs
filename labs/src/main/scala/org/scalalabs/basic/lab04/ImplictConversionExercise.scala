@@ -6,42 +6,39 @@ import scala.math._
 /**
  * @author arjan
  *
- * This excercise introduces you to Scala implicit conversion features.
+ *         This excercise introduces you to Scala implicit conversion features.
  *
- * Scala has a nice feature that automatically lets you convert types and add methods to an existing class.
- * For instance, it is possible to write "Hello".toList, which yields List(H, e, l, l, o) even though
- * the implementation of the String class does not provide a toList method.
- * This is coined 'library pimping' and is achieved via implicit conversions.
- * In this exercise, you will among other try out some implicit conversions from integers to Joda's DateTime,
- * so we can write little DSL like statements like 1 day + 2 hours.
+ *         Scala has a nice feature that automatically lets you convert types and add methods to an existing class.
+ *         For instance, it is possible to write "Hello".toList, which yields List(H, e, l, l, o) even though
+ *         the implementation of the String class does not provide a toList method.
+ *         This is coined 'library pimping' and is achieved via implicit conversions.
+ *         In this exercise, you will among other try out some implicit conversions from integers to Joda's DateTime,
+ *         so we can write little DSL like statements like 1 day + 2 hours.
  *
- * Provide a suitable implementation in order to make the corresponding unittest work.
+ *         Provide a suitable implementation in order to make the corresponding unittest work.
  *
- * Reference material to solve these exercises can be found here:
- * Implicit conversions: http://programming-scala.labs.oreilly.com/ch08.html#Implicits
+ *         Reference material to solve these exercises can be found here:
+ *         Implicit conversions: http://programming-scala.labs.oreilly.com/ch08.html#Implicits
  *
  */
 
 object ImplictConversionExercise {
 
-  implicit def myConf(i:Int) = new {
-     def *(s:String):String = s * i
-     }
-/*
-scala> 5 * "abc"
-res6: String = abcabcabcabcabc
-*/
-
-  /**============================================================================ */
-  def stringToList(s: String): List[Char] = {
-    //built in: our String will be converted to Scala's RichString, because this is defined a Scala
-    //object called Predef. This is imported by the compiler by default.
-    //
-    List[Char]()
+  implicit def myConf(i: Int) = new {
+    def *(s: String): String = s * i
   }
 
-  /**============================================================================ */
+  /*
+  scala> 5 * "abc"
+  res6: String = abcabcabcabcabc
+  */
+
+  def stringToList(s: String): List[Char] = {
+    s.toList
+  }
+
   class Celsius(val degree: Double)
+
   class Fahrenheit(val fahrenheit: Double)
 
   object TemperaturPrinter {
@@ -53,6 +50,10 @@ res6: String = abcabcabcabcabc
       "It's " + f.fahrenheit + " fahrenheit"
     }
   }
+
+  implicit def celsiusToFaherenheit(c: Celsius) = new Fahrenheit(ConversionHelper.celsius2FahrenheitConversion(c.degree))
+
+  implicit def fahrenheitToCelsisus(f: Fahrenheit) = new Celsius(ConversionHelper.fahrenheit2CelsiusConversion(f.fahrenheit))
 
   /**
    * Use this conversion helper to convert fahrenheit values to degree celsius values
@@ -69,29 +70,35 @@ res6: String = abcabcabcabcabc
     }
   }
 
-  /**============================================================================ */
   // Write here an implict conversion that adds a camelCase method to string.
 
+  implicit def strToCamelCase(s: String) = new {
 
+    def camelCase: String = {
+      val split = s.split(" ")
+      split.head.toLowerCase + split.tail.map(x => x.substring(0, 1).toUpperCase + x.substring(1, x.size)).mkString
+    }
 
+  }
 }
 
-/**============================================================================ */
 
 object TimeUtils {
+
   case class DurationBuilder(timeSpan: Long) {
     def now = new DateTime().getMillis()
 
-    //    def seconds = TODO your implementation here...
+    def seconds = RichDuration(TimeUtils.seconds(timeSpan))
 
-    //    def minutes = TODO your implementation here...
+    def minutes = RichDuration(TimeUtils.minutes(timeSpan))
 
-    //    def hours = TODO your implementation here...
+    def hours = RichDuration(TimeUtils.hours(timeSpan))
 
-    //    def days = TODO your implementation here...
+    def days = RichDuration(TimeUtils.days(timeSpan))
   }
 
-  //TODO define some implicits that convert integers and longs to durations and builders to make it all work
+  implicit def longToDuration(l: Long): Duration = new Duration(l)
+  implicit def intToDurationBuilder(i: Int): DurationBuilder = new DurationBuilder(i)
 
   def seconds(in: Long) = in * 1000L
 
