@@ -42,7 +42,6 @@ class BasicPatternMatchingExerciseTest extends JUnitSuite {
     //pf1 and pf2 are both partial functions.
     //These inherit from Scala's Function class, with an extra method: isDefinedAt
     //  pf3 should be defined in terms of pf1 and pf2
-
     assertTrue(BasicPatternMatchingExercise.pf1.isDefinedAt("scala-labs"))
     assertTrue(BasicPatternMatchingExercise.pf1.isDefinedAt("stuff"))
     assertFalse(BasicPatternMatchingExercise.pf1.isDefinedAt("other stuff"))
@@ -52,4 +51,5 @@ class BasicPatternMatchingExerciseTest extends JUnitSuite {
     assertTrue(BasicPatternMatchingExercise.pf3.isDefinedAt("scala-labs"))
     assertTrue(BasicPatternMatchingExercise.pf3.isDefinedAt("other stuff"))
   }
+
 }

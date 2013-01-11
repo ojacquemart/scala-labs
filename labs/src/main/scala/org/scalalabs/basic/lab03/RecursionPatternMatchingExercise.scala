@@ -1,5 +1,7 @@
 package org.scalalabs.basic.lab03
+
 import sys._
+
 /**
  * This exercise introduces you to pattern matching in combination with recursion.
  *
@@ -15,25 +17,42 @@ import sys._
 
 object RecursionPatternMatchingExercise {
 
-  /*************************************************************************
-   * Recursive algorithms with pattern matching
-   * For expected solution see unittest @RecursionPatternMatchingExerciseTest
-   *************************************************************************/
+  /** ***********************************************************************
+    * Recursive algorithms with pattern matching
+    * For expected solution see unittest @RecursionPatternMatchingExerciseTest
+    * ************************************************************************/
 
   def compress[T](in: List[T]): List[T] = {
-    error("fix me")
+    in.distinct
+    //    in match {
+    //    case Nil => Nil
+    //    case a :: b :: tail if a == b => compress(a :: tail)
+    //    case a :: tail => a :: compress(tail)
+    //    }
   }
 
   def groupConsecutive[T](in: List[T]): List[List[T]] = {
-    error("fix me")
+    in match {
+      case Nil => Nil
+      case a :: tail => {
+        val (equals, tail) = in.span(_ == a)
+        equals :: groupConsecutive(tail)
+      }
+    }
   }
 
   def groupEquals[T](in: List[T]): List[List[T]] = {
-    error("fix me")
+    in match {
+      case Nil => Nil
+      case a :: b :: tail => {
+        val (equals, tail) = in.partition(_ == a)
+        equals :: groupEquals(tail)
+      }
+    }
   }
 
   def amountEqualMembers[T](in: List[T]): List[(Int, T)] = {
-    error("fix me")
+    groupEquals(in).map((x: List[T]) => (x.length, x.head))
   }
 
   def zipMultiple(in: List[List[_]]): List[List[_]] = {
