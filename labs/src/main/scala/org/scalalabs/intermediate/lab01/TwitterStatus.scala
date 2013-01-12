@@ -2,8 +2,6 @@ package org.scalalabs.intermediate.lab01
 
 import scala.xml._
 import org.joda.time._
-import format.{DateTimeFormatter, DateTimeFormat}
-import java.util.Locale
 
 case class TwitterStatus(
     id: Long,
@@ -16,23 +14,9 @@ case class TwitterStatus(
     user: TwitterUser
 )
 
-object TwitterStatus {
+object TwitterStatus extends XMLHelper {
 
-  def apply(node: Node): TwitterStatus = {
-
-    def text(attribute: String) = (node \ attribute).text
-    def boolean(attribute: String) = text(attribute).toBoolean
-    def long(attribute: String) = text(attribute).toLong
-    def option(attribute: String): Option[Long] = {
-      val value: String = text(attribute)
-      if (value.isEmpty) None
-      else Some(value.toLong)
-    }
-
-    def dateFormat(attribute: String): DateTime = {
-      val dtf: DateTimeFormatter = DateTimeFormat.forPattern("EE MMM dd HH:mm:ss Z yyyy").withLocale(Locale.US)
-      dtf.parseDateTime(text(attribute))
-    }
+  def apply(implicit node: Node): TwitterStatus = {
 
     new TwitterStatus(
       long("id"),
