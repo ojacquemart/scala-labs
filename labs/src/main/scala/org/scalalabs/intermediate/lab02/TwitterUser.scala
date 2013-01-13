@@ -14,6 +14,16 @@ abstract class TwitterUser {
     val friendsCount: Int
     val followersCount : Int
     val statusesCount : Int
+
+  override def toString = name
+  override def hashCode = id.hashCode
+
+  override def equals(other: Any) = {
+    other match {
+      case otherTwitterUser: TwitterUser => id == otherTwitterUser.id
+      case _ => false
+    }
+  }
 }
 
 object TwitterUser {
