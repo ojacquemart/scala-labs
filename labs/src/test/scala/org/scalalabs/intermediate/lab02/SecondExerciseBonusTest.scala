@@ -8,6 +8,8 @@ import org.scalatest.junit.JUnitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import ImplicitTwitterUsers._
+
 
 /*
  * Exercise 2: Collect your bonus !
@@ -18,74 +20,71 @@ import org.junit.runner.RunWith
  */
 @RunWith(classOf[JUnitRunner])
 class SecondExerciseBonusTest extends JUnitSuite {
-    private def getFriends(): List[TwitterUser] = loadUsersFromXml("/friends.xml")
-    private def getFollowers(): List[TwitterUser] = loadUsersFromXml("/followers.xml")
+  private def getFriends(): List[TwitterUser] = loadUsersFromXml("/friends.xml")
 
-    private def loadUsersFromXml(xmlFileName: String): List[TwitterUser] = {
-        val xml = XML.load(this.getClass.getResourceAsStream(xmlFileName))
-        val friends = xml \\ "user"
+  private def getFollowers(): List[TwitterUser] = loadUsersFromXml("/followers.xml")
 
-        friends.toList.map(s => TwitterUser(s))
+  private def loadUsersFromXml(xmlFileName: String): List[TwitterUser] = {
+    val xml = XML.load(this.getClass.getResourceAsStream(xmlFileName))
+    val friends = xml \\ "user"
+
+    friends.toList.map(s => TwitterUser(s))
+  }
+
+
+  // ========================================================================
+  // The tests
+  // ========================================================================
+
+  @Test
+  def testFindPopularFriends() {
+    // TwitterUsers are popular if they have at least 2000 followers
+
+    expect(10) {
+      getFriends.thatArePopular.size
     }
+  }
 
-
-    // ========================================================================
-    // The tests
-    // ========================================================================
-
-	@Test
-	def testFindPopularFriends() {
-        // TwitterUsers are popular if they have at least 2000 followers
-    fail("TODO: uncomment and fix")
-//        expect(10) {
-//            getFriends.thatArePopular.size
-//        }
+  @Test
+  def testFindScreenNamesOfPopularFriends() {
+    expect(List("headius", "twitterapi", "stephenfry", "macrumors", "spolsky", "martinfowler", "WardCunningham", "unclebobmartin", "pragdave", "KentBeck")) {
+      getFriends thatArePopularByScreenName
     }
+  }
 
-    @Test
-	def testFindScreenNamesOfPopularFriends() {
-      fail("TODO: uncomment and fix")
-//        expect(List("headius", "twitterapi", "stephenfry", "macrumors", "spolsky", "martinfowler", "WardCunningham", "unclebobmartin", "pragdave", "KentBeck")) {
-//            getFriends thatArePopularByScreenName
-//        }
+  // the same List[String] as last time but now sorted by followersCount (highest first)
+  @Test
+  def testFindScreenNamesOfPupularFriendsSortedByPopularity() {
+    expect(List("stephenfry", "macrumors", "twitterapi", "spolsky", "martinfowler", "KentBeck", "unclebobmartin", "pragdave", "WardCunningham", "headius")) {
+      getFriends thatArePopularByScreenNameSortedbyPopularity
     }
+  }
 
-    // the same List[String] as last time but now sorted by followersCount (highest first)
-    @Test
-	def testFindScreenNamesOfPupularFriendsSortedByPopularity() {
-      fail("TODO: uncomment and fix")
-//        expect(List("stephenfry", "macrumors", "twitterapi", "spolsky", "martinfowler", "KentBeck", "unclebobmartin", "pragdave", "WardCunningham", "headius")) {
-//            getFriends thatArePopularByScreenNameSortedbyPopularity
-//        }
+  // We expect a List[(String, Int)], i.e. a List of tuples, each with a screen name and a number of followers
+  @Test
+  def testFindPopularFriendsAndTheirRankings() {
+    expect(
+      List(("stephenfry", 714779),
+        ("macrumors", 74132),
+        ("twitterapi", 18817),
+        ("spolsky", 12607),
+        ("martinfowler", 8759),
+        ("KentBeck", 6440),
+        ("unclebobmartin", 5175),
+        ("pragdave", 4462),
+        ("WardCunningham", 4423),
+        ("headius", 2378))
+    ) {
+      getFriends thatArePopularByScreenNameAndPopularitySortedbyPopularity
     }
+  }
 
-    // We expect a List[(String, Int)], i.e. a List of tuples, each with a screen name and a number of followers
-    @Test
-	def testFindPopularFriendsAndTheirRankings() {
-      fail("TODO: uncomment and fix")
-//        expect(
-//            List(("stephenfry",    714779),
-//                 ("macrumors",     74132),
-//                 ("twitterapi",    18817),
-//                 ("spolsky",       12607),
-//                 ("martinfowler",  8759),
-//                 ("KentBeck",      6440),
-//                 ("unclebobmartin",5175),
-//                 ("pragdave",      4462),
-//                 ("WardCunningham",4423),
-//                 ("headius",       2378))
-//        ) {
-//            getFriends thatArePopularByScreenNameAndPopularitySortedbyPopularity
-//        }
+  // Hint: you might want to implement equals and hashcode for this one
+  @Test
+  def testFindFriendsThatAreAlsoFollowers() {
+    expect(10) {
+      getFriends.thatAreInBothLists(getFollowers).size
     }
-
-    // Hint: you might want to implement equals and hashcode for this one
-    @Test
-	def testFindFriendsThatAreAlsoFollowers() {
-      fail("TODO: uncomment and fix")
-//        expect(10) {
-//            getFriends.thatAreAlsoIn(getFollowers).size
-//        }
-    }
+  }
 
 }

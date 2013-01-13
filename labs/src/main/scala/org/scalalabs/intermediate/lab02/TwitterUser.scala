@@ -24,6 +24,13 @@ abstract class TwitterUser {
       case _ => false
     }
   }
+
+  implicit def toPopular(users: List[TwitterUser]) = new {
+
+    def popular() = {
+     List()
+    }
+  }
 }
 
 object TwitterUser {
